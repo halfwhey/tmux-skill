@@ -1,19 +1,3 @@
-## Installation
-
-### Claude Code plugin
-
-```
-/install-plugin halfwhey/skills
-```
-
-### Skills CLI
-
-```bash
-npx skills add halfwhey/skills -a claude-code -g -y
-```
-
----
-
 ## tmux
 
 ![explore-top](https://github.com/halfwhey/skills/releases/download/v1.1.0/top_demo.gif)
@@ -22,7 +6,18 @@ npx skills add halfwhey/skills -a claude-code -g -y
 
 Gives Claude full control over tmux - opening panes, driving TUI applications, reading output, and debugging problems alongside you.
 
-### Why
+
+## Installation
+
+```bash
+claude plugin marketplace add halfwhey/skills
+
+claude plugin install tmux
+
+```
+
+
+## Why
 
 Claude Code runs inside your terminal but can only see its own process. This skill breaks that wall: Claude can split panes, run commands, operate full-screen TUI apps (vim, gdb, top, lazygit), read their output, and react to what it sees - all while you watch in real time.
 
@@ -34,7 +29,22 @@ Most approaches to reading terminal output dump the entire scrollback every time
 - **TUI mode** (`--tui`) - for full-screen apps like vim, htop, or gdb. Snapshots the visible screen and diffs against the previous capture. If less than half the screen changed, Claude gets a **unified diff of just the changed regions**. Heavy redraws fall back to the full screen.
 - **Output capping** - all output is hard-capped at 4KB (first 2000 + last 2000 bytes). When truncated, the full output is saved to disk and the path is included so Claude can read or grep it if needed.
 
+### A note on TUIs
+
+Letting Claude interact with a system through a TUI is rarely the best approach - there is almost always a CLI-oriented alternative that is faster and more reliable. For example, Claude gets zero utility out of lazygit when `git` is already feature-complete as a CLI. Where this skill shines is driving REPLs (Python, gdb, sqlite), exploring and debugging TUI applications, and operating tools that have no headless equivalent.
+
+
 ### More demos
+
+#### Debugging with gdb
+
+Claude runs a buggy C program, reads the source with `bat`, opens gdb, sets breakpoints, steps through code in TUI layout, prints variables to find an off-by-one bug, fixes the source, and re-runs.
+
+[![asciicast](https://asciinema.org/a/50XAFUCkBwKkMJM1.svg)](https://asciinema.org/a/50XAFUCkBwKkMJM1)
+
+#### Exploring the Nix repl
+
+[![asciicast](https://asciinema.org/a/6X412bOt8bc5vAzh.svg)](https://asciinema.org/a/6X412bOt8bc5vAzh)
 
 #### Quitting vim
 
@@ -42,11 +52,6 @@ Claude opens vim, writes text, saves, and exits - the classic "how do I quit vim
 
 [![asciicast](https://asciinema.org/a/ofo4Nnotg6dSMUF5.svg)](https://asciinema.org/a/ofo4Nnotg6dSMUF5)
 
-#### Debugging with gdb
-
-Claude runs a buggy C program, reads the source with `bat`, opens gdb, sets breakpoints, steps through code in TUI layout, prints variables to find an off-by-one bug, fixes the source, and re-runs.
-
-[![asciicast](https://asciinema.org/a/50XAFUCkBwKkMJM1.svg)](https://asciinema.org/a/50XAFUCkBwKkMJM1)
 
 #### Exploring top
 

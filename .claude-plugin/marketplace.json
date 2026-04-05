@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "tmux",
-      "source": "./tmux",
+      "source": "./skills/tmux",
       "description": "Control tmux sessions, windows, and panes via the tmux CLI.",
       "version": "1.1.0"
     }
