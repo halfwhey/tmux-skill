@@ -61,12 +61,12 @@ If the description is ambiguous or matches multiple panes, ask the user:
 
 ## Reading Pane Output
 
-Use the `bin/read-tmux` script — do **not** use raw `capture-pane` for reading command output.
+Use the `read-tmux` script — do **not** use raw `capture-pane` for reading command output.
 
 ```bash
-bin/read-tmux %42          # delta mode (default) — for shell output
-bin/read-tmux --tui %42    # TUI mode — diff of changed screen regions
-bin/read-tmux --full %42   # TUI mode — always full screen (no diff)
+read-tmux %42          # delta mode (default) — for shell output
+read-tmux --tui %42    # TUI mode — diff of changed screen regions
+read-tmux --full %42   # TUI mode — always full screen (no diff)
 ```
 
 ### Delta mode (default)
@@ -101,7 +101,7 @@ tui_prev     ← last TUI capture for diffing
 
 ## Pane Decoration
 
-Both `bin/read-tmux` and `bin/send-tmux` auto-decorate panes on first interaction — a yellow "● Operated by Claude" bar appears at the top of the pane. No manual decoration needed.
+Both `read-tmux` and `send-tmux` auto-decorate panes on first interaction — a yellow "● Operated by Claude" bar appears at the top of the pane. No manual decoration needed.
 
 To release decoration when done with a pane:
 ```bash
@@ -113,20 +113,20 @@ tmux set-option -p -t %42 -u pane-border-format 2>/dev/null || true
 
 ## Sending Commands
 
-Use `bin/send-tmux` — it auto-decorates the pane and passes all arguments to `tmux send-keys`.
+Use `send-tmux` — it auto-decorates the pane and passes all arguments to `tmux send-keys`.
 
 ```bash
 # Run a command
-bin/send-tmux %42 "npm test" Enter
+send-tmux %42 "npm test" Enter
 
 # Interrupt
-bin/send-tmux %42 C-c
+send-tmux %42 C-c
 
 # Send EOF / exit shell
-bin/send-tmux %42 C-d
+send-tmux %42 C-d
 
 # Quit a pager
-bin/send-tmux %42 q
+send-tmux %42 q
 ```
 
 ---
@@ -239,8 +239,8 @@ tmux display-message -t %42 -p '#{pane_pid}'
 ### Poll until a command finishes
 
 ```bash
-tmux send-keys -t %42 "make build && echo __DONE__" Enter
-while ! bin/read-tmux %42 | grep -q "__DONE__"; do sleep 0.5; done
+send-tmux %42 "make build && echo __DONE__" Enter
+while ! read-tmux %42 | grep -q "__DONE__"; do sleep 0.5; done
 ```
 
 ### Open a new pane for a project task

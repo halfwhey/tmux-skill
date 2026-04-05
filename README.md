@@ -1,25 +1,30 @@
 ## Installation
 
-```bash
-# Add the marketplace
-claude plugin marketplace add halfwhey/skills
+### Claude Code plugin
 
-# Install a plugin
-claude plugin install tmux
+```
+/install-plugin halfwhey/skills
+```
+
+### Skills CLI
+
+```bash
+npx skills add halfwhey/skills -a claude-code -g -y
 ```
 
 ---
 
 ## tmux
 
-![explore-top](https://github.com/halfwhey/skills/releases/download/v1.1.0/explore-top.gif)
-*Claude teaches you how to use top*
+![explore-top](https://github.com/halfwhey/skills/releases/download/v1.1.0/top_demo.gif)
+
+*Claude teaches you how to use top (higher quality recording at the bottom)*
 
 Gives Claude full control over tmux - opening panes, driving TUI applications, reading output, and debugging problems alongside you.
 
 ### Why
 
-Claude Code runs inside your terminal but can only see its own process. This plugin breaks that wall: Claude can split panes, run commands, operate full-screen TUI apps (vim, gdb, top, lazygit), read their output, and react to what it sees - all while you watch in real time.
+Claude Code runs inside your terminal but can only see its own process. This skill breaks that wall: Claude can split panes, run commands, operate full-screen TUI apps (vim, gdb, top, lazygit), read their output, and react to what it sees - all while you watch in real time.
 
 ### What makes the reading efficient
 
@@ -29,21 +34,24 @@ Most approaches to reading terminal output dump the entire scrollback every time
 - **TUI mode** (`--tui`) - for full-screen apps like vim, htop, or gdb. Snapshots the visible screen and diffs against the previous capture. If less than half the screen changed, Claude gets a **unified diff of just the changed regions**. Heavy redraws fall back to the full screen.
 - **Output capping** - all output is hard-capped at 4KB (first 2000 + last 2000 bytes). When truncated, the full output is saved to disk and the path is included so Claude can read or grep it if needed.
 
-The result: Claude spends tokens on what actually changed, not on re-reading static content.
-
 ### More demos
 
 #### Quitting vim
 
 Claude opens vim, writes text, saves, and exits - the classic "how do I quit vim" solved by an AI.
 
-![quit-vim](https://github.com/halfwhey/skills/releases/download/v1.1.0/quit-vim.gif)
+[![asciicast](https://asciinema.org/a/ofo4Nnotg6dSMUF5.svg)](https://asciinema.org/a/ofo4Nnotg6dSMUF5)
 
 #### Debugging with gdb
 
 Claude runs a buggy C program, reads the source with `bat`, opens gdb, sets breakpoints, steps through code in TUI layout, prints variables to find an off-by-one bug, fixes the source, and re-runs.
 
-![debug-gdb](https://github.com/halfwhey/skills/releases/download/v1.1.0/debug-gdb.gif)
+[![asciicast](https://asciinema.org/a/50XAFUCkBwKkMJM1.svg)](https://asciinema.org/a/50XAFUCkBwKkMJM1)
+
+#### Exploring top
+
+[![asciicast](https://asciinema.org/a/TJJJ3w7svwTVG36h.svg)](https://asciinema.org/a/TJJJ3w7svwTVG36h)
+
 
 ## License
 
