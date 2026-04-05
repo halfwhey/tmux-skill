@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# send-tmux <pane_id> <keys...>
+#
+# Sends keys to a tmux pane, decorating it first to signal Claude is operating.
+
+set -euo pipefail
+
+PANE_ID="${1:-}"
+shift || true
+
+if [[ -z "$PANE_ID" ]]; then
+  echo "Usage: send-tmux <pane_id> <keys...>  (e.g. send-tmux %42 'echo hi' Enter)" >&2
+  exit 1
+fi
+
+if ! tmux display-message -t "$PANE_ID" -p '#{pane_id}' &>/dev/null; then
+  echo "Error: pane '$PANE_ID' not found" >&2
+  exit 1
+fi
+
+# Decorate
+tmux set-option -p -t "$PANE_ID" pane-border-format "#[bg=yellow,fg=black,bold] ● Operated by Claude #[default]" 2>/dev/null || true
+
+# Send keys
+tmux send-keys -t "$PANE_ID" "$@"

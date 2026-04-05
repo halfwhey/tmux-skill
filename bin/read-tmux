@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# read-tmux <pane_id>
+#
+# Reads output from a tmux pane identified by its unique pane_id (e.g. %42).
+# First call: captures visible screen up to cursor, saves position marker.
+# Subsequent calls: captures only new lines since last read.
+#
+# Position = history_size + cursor_y — tracks total lines written, accurate
+# even when output hasn't scrolled into the scrollback buffer yet.
+#
+# Output is capped: first 2000 bytes + last 2000 bytes, middle truncated.
+
+set -euo pipefail
+
+FULL=false
+if [[ "${1:-}" == "--full" ]]; then
+  FULL=true
+  shift
+fi
+
+PANE_ID="${1:-}"
+if [[ -z "$PANE_ID" ]]; then
+  echo "Usage: read-tmux [--full] <pane_id>  (e.g. read-tmux %42)" >&2
+  exit 1
+fi
+
+# Validate pane exists
+if ! tmux display-message -t "$PANE_ID" -p '#{pane_id}' &>/dev/null; then
+  echo "Error: pane '$PANE_ID' not found" >&2
+  exit 1
+fi
+
+DIR="/tmp/tmux-skill/${PANE_ID}"
+MARKER="$DIR/position"
+HEAD=2000
+TAIL=2000
+
+# Print content; if over HEAD+TAIL bytes, show first HEAD and last TAIL with a gap message
+print_capped() {
+  local content="$1"
+  local bytes=${#content}
+  local limit=$(( HEAD + TAIL ))
+  if [[ $bytes -eq 0 ]]; then
+    echo "(empty)"
+  elif [[ $bytes -le $limit ]]; then
+    printf '%s\n' "$content"
+  else
+    local skipped=$(( bytes - limit ))
+    printf '%s\n' "${content:0:$HEAD}"
+    echo ""
+    echo "--- [... $skipped bytes omitted ...] ---"
+    echo ""
+    printf '%s\n' "${content: -$TAIL}"
+  fi
+}
+
+CURRENT_HISTORY=$(tmux display-message -t "$PANE_ID" -p '#{history_size}')
+CURRENT_CURSOR=$(tmux display-message -t "$PANE_ID" -p '#{cursor_y}')
+CURRENT_TOTAL=$(( CURRENT_HISTORY + CURRENT_CURSOR ))
+
+if [[ "$FULL" == true ]]; then
+  OUTPUT=$(tmux capture-pane -t "$PANE_ID" -p -E "$CURRENT_CURSOR")
+  print_capped "$OUTPUT"
+  exit 0
+fi
+
+if [[ ! -f "$MARKER" ]]; then
+  # First call — decorate pane, capture full buffer, save position
+  mkdir -p "$DIR"
+  tmux set-option -p -t "$PANE_ID" pane-border-format "#[bg=yellow,fg=black,bold] ● Operated by Claude #[default]" 2>/dev/null || true
+  OUTPUT=$(tmux capture-pane -t "$PANE_ID" -p -S - -E "$CURRENT_CURSOR")
+  echo "$CURRENT_TOTAL" > "$MARKER"
+  print_capped "$OUTPUT"
+else
+  SAVED_TOTAL=$(cat "$MARKER")
+  NEW_LINES=$(( CURRENT_TOTAL - SAVED_TOTAL ))
+  echo "$CURRENT_TOTAL" > "$MARKER"
+
+  if [[ $NEW_LINES -gt 0 ]]; then
+    # Capture only new lines
+    START=$(( CURRENT_CURSOR - NEW_LINES ))
+    OUTPUT=$(tmux capture-pane -t "$PANE_ID" -p -S "$START" -E "$CURRENT_CURSOR")
+    print_capped "$OUTPUT"
+  elif [[ $NEW_LINES -eq 0 ]]; then
+    echo "(no new output)"
+  else
+    # Pane was cleared/reset — show visible area up to cursor
+    OUTPUT=$(tmux capture-pane -t "$PANE_ID" -p -E "$CURRENT_CURSOR")
+    print_capped "$OUTPUT"
+  fi
+fi
