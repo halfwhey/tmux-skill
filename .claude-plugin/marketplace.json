@@ -1,0 +1,14 @@
+{
+  "name": "halfwhey-skills",
+  "owner": {
+    "name": "halfwhey"
+  },
+  "plugins": [
+    {
+      "name": "tmux",
+      "source": "./tmux",
+      "description": "Control tmux sessions, windows, and panes via the tmux CLI.",
+      "version": "1.1.0"
+    }
+  ]
+}

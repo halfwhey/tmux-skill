@@ -1,13 +1,27 @@
-![explore-top](https://github.com/halfwhey/tmux-skill/releases/download/v1.1.0/explore-top.gif)
+## Installation
+
+```bash
+# Add the marketplace
+claude plugin marketplace add halfwhey/skills
+
+# Install a plugin
+claude plugin install tmux
+```
+
+---
+
+## tmux
+
+![explore-top](https://github.com/halfwhey/skills/releases/download/v1.1.0/explore-top.gif)
 *Claude teaches you how to use top*
 
-A [Claude Code skill](https://docs.anthropic.com/en/docs/claude-code/skills) that gives Claude full control over tmux - opening panes, driving TUI applications, reading output, and debugging problems alongside you.
+Gives Claude full control over tmux - opening panes, driving TUI applications, reading output, and debugging problems alongside you.
 
-## Why
+### Why
 
-Claude Code runs inside your terminal but can only see its own process. This skill breaks that wall: Claude can split panes, run commands, operate full-screen TUI apps (vim, gdb, top, lazygit), read their output, and react to what it sees - all while you watch in real time.
+Claude Code runs inside your terminal but can only see its own process. This plugin breaks that wall: Claude can split panes, run commands, operate full-screen TUI apps (vim, gdb, top, lazygit), read their output, and react to what it sees - all while you watch in real time.
 
-## What makes the reading efficient
+### What makes the reading efficient
 
 Most approaches to reading terminal output dump the entire scrollback every time, burning context window on thousands of lines Claude has already seen. `read-tmux` is smarter:
 
@@ -17,47 +31,19 @@ Most approaches to reading terminal output dump the entire scrollback every time
 
 The result: Claude spends tokens on what actually changed, not on re-reading static content.
 
-## Installation
+### More demos
 
-```bash
-# Add the marketplace
-claude plugin marketplace add halfwhey/tmux-skill
-
-# Install the plugin
-claude plugin install tmux
-```
-
-**Or test locally:**
-```bash
-claude --plugin-dir /path/to/tmux-skill
-```
-
-## Structure
-
-```
-├── .claude-plugin/
-│   └── plugin.json       # Plugin manifest
-├── skills/
-│   └── tmux/
-│       └── SKILL.md      # The skill definition Claude reads
-├── bin/
-│   ├── read-tmux         # Smart pane output reader (delta + TUI modes)
-│   └── send-tmux         # Pane key sender with auto-decoration
-```
-
-## More demos
-
-### Quitting vim
+#### Quitting vim
 
 Claude opens vim, writes text, saves, and exits - the classic "how do I quit vim" solved by an AI.
 
-![quit-vim](https://github.com/halfwhey/tmux-skill/releases/download/v1.1.0/quit-vim.gif)
+![quit-vim](https://github.com/halfwhey/skills/releases/download/v1.1.0/quit-vim.gif)
 
-### Debugging with gdb
+#### Debugging with gdb
 
 Claude runs a buggy C program, reads the source with `bat`, opens gdb, sets breakpoints, steps through code in TUI layout, prints variables to find an off-by-one bug, fixes the source, and re-runs.
 
-![debug-gdb](https://github.com/halfwhey/tmux-skill/releases/download/v1.1.0/debug-gdb.gif)
+![debug-gdb](https://github.com/halfwhey/skills/releases/download/v1.1.0/debug-gdb.gif)
 
 ## License
 
