@@ -1,0 +1,68 @@
+## tmux
+
+![explore-top](https://github.com/halfwhey/skills/releases/download/v1.1.0/top_demo.gif)
+
+*Claude teaches you how to use top (higher quality recording at the bottom)*
+
+Gives Claude full control over tmux - opening panes, driving TUI applications, reading output, and debugging problems alongside you.
+
+
+## Installation
+
+```bash
+claude plugin marketplace add halfwhey/skills
+
+claude plugin install tmux
+
+```
+
+
+## Why
+
+Claude Code runs inside your terminal but can only see its own process. This skill breaks that wall: Claude can split panes, run commands, operate full-screen TUI apps (vim, gdb, top, lazygit), read their output, and react to what it sees - all while you watch in real time.
+
+### What makes the reading efficient
+
+Most approaches to reading terminal output dump the entire scrollback every time, burning context window on thousands of lines Claude has already seen. `read-tmux` is smarter:
+
+- **Delta mode** (default) - tracks a position marker. First read captures the visible buffer; subsequent reads return **only new lines** since the last call. If nothing changed, Claude gets `(no new output)` instead of a wall of text.
+- **TUI mode** (`--tui`) - for full-screen apps like vim, htop, or gdb. Snapshots the visible screen and diffs against the previous capture. If less than half the screen changed, Claude gets a **unified diff of just the changed regions**. Heavy redraws fall back to the full screen.
+- **Output capping** - all output is hard-capped at 4KB (first 2000 + last 2000 bytes). When truncated, the full output is saved to disk and the path is included so Claude can read or grep it if needed.
+
+### A note on TUIs
+
+Letting Claude interact with a system through a TUI is rarely the best approach - there is almost always a CLI-oriented alternative that is faster and more reliable. For example, Claude gets zero utility out of lazygit when `git` is already feature-complete as a CLI. Where this skill shines is driving REPLs (Python, gdb, sqlite), exploring and debugging TUI applications, and operating tools that have no headless equivalent.
+
+
+### More demos
+
+#### Reverse engineering a binaryb with Radare2
+
+[![asciicast](https://asciinema.org/a/0qNpN19bp9gWKt1u.svg)](https://asciinema.org/a/0qNpN19bp9gWKt1u)
+
+
+#### Debugging with gdb
+
+Claude runs a buggy C program, reads the source with `bat`, opens gdb, sets breakpoints, steps through code in TUI layout, prints variables to find an off-by-one bug, fixes the source, and re-runs.
+
+[![asciicast](https://asciinema.org/a/50XAFUCkBwKkMJM1.svg)](https://asciinema.org/a/50XAFUCkBwKkMJM1)
+
+#### Exploring the Nix repl
+
+[![asciicast](https://asciinema.org/a/6X412bOt8bc5vAzh.svg)](https://asciinema.org/a/6X412bOt8bc5vAzh)
+
+#### Quitting vim
+
+Claude opens vim, writes text, saves, and exits - the classic "how do I quit vim" solved by an AI.
+
+[![asciicast](https://asciinema.org/a/ofo4Nnotg6dSMUF5.svg)](https://asciinema.org/a/ofo4Nnotg6dSMUF5)
+
+
+#### Exploring top
+
+[![asciicast](https://asciinema.org/a/TJJJ3w7svwTVG36h.svg)](https://asciinema.org/a/TJJJ3w7svwTVG36h)
+
+
+## License
+
+MIT
