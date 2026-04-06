@@ -36,6 +36,11 @@ Letting Claude interact with a system through a TUI is rarely the best approach 
 
 ### More demos
 
+#### Reverse engineering a binaryb with Radare2
+
+[![asciicast](https://asciinema.org/a/0qNpN19bp9gWKt1u.svg)](https://asciinema.org/a/0qNpN19bp9gWKt1u)
+
+
 #### Debugging with gdb
 
 Claude runs a buggy C program, reads the source with `bat`, opens gdb, sets breakpoints, steps through code in TUI layout, prints variables to find an off-by-one bug, fixes the source, and re-runs.
